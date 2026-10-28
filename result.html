@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Result Portal – Organization Name</title>
+  <link rel="stylesheet" href="result.css">
+  <style>
+    /* PDF result view */
+    .pdf-box { margin: 16px 0; border: 1px solid #d0d7de; border-radius: 6px; overflow: hidden; background: #f6f8fa; }
+    .pdf-box object { display: block; width: 100%; height: 70vh; min-height: 420px; }
+    .pdf-fallback { padding: 24px; text-align: center; margin: 0; }
+    .rc-actions a { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 4px; font-weight: 600; font-size: 15px; text-decoration: none; cursor: pointer; }
+    .rc-actions a svg { width: 18px; height: 18px; }
+    .btn-download { background: #0b6b3a; color: #fff; }
+    .btn-open { background: #fff; color: #0b6b3a; border: 1px solid #0b6b3a; }
+
+    /* ===== Viva notice (vvn-) ===== */
+    .vvn-wrap { position: relative; }
+    .vvn-notice {
+      position: absolute; top: 12px; left: 12px; right: 12px; z-index: 5;
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 40px 12px 14px;
+      background: linear-gradient(135deg, #effaf3, #cdf0da);
+      border: 1px solid #7fcf9f; border-left: 6px solid #0b6b3a;
+      border-radius: 8px; color: #0a3d22;
+      box-shadow: 0 8px 22px rgba(0,0,0,.2);
+      animation: vvn-in .45s ease;
+    }
+    .vvn-icon {
+      flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
+      background: #16a34a; color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700; animation: vvn-pulse 2s infinite;
+    }
+    .vvn-body { min-width: 0; }
+    .vvn-title { display: block; font-size: 15px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; }
+    .vvn-text { display: block; margin-top: 2px; font-size: 14px; line-height: 1.45; }
+    .vvn-close {
+      position: absolute; top: 6px; right: 8px; width: 26px; height: 26px;
+      border: 0; border-radius: 50%; background: rgba(0,0,0,.08); color: #0a3d22;
+      font-size: 16px; line-height: 1; cursor: pointer;
+    }
+    .vvn-close:hover { background: rgba(0,0,0,.18); }
+    .vvn-notice.vvn-hide { display: none; }
+    @keyframes vvn-in { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+    @keyframes vvn-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(22,163,74,.5); } 50% { box-shadow: 0 0 0 8px rgba(22,163,74,0); } }
+    @media (max-width: 480px) { .vvn-notice { top: 6px; left: 6px; right: 6px; padding: 10px 36px 10px 10px; } }
+  </style>
+</head>
+<body>
+
+<!-- ========== ICON SPRITE ========== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-shield" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></g></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path fill="currentColor" d="M7 3h10v4H7zM5 8h14a2 2 0 012 2v7h-4v4H7v-4H3v-7a2 2 0 012-2zm4 7v4h6v-4z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path fill="currentColor" d="M11 3h2v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM5 19h14v2H5z"/></symbol>
+</svg>
+
+<!-- back-to-top button -->
+<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+
+<!-- ========== HEADER ========== -->
+
+<main>
+
+<!-- ========== PAGE BANNER ========== -->
+<section class="page-banner">
+  <h1>Result Portal</h1>
+  <p>Enter your registration number to view your published result</p>
+</section>
+
+<div class="crumbs"><a href="index.html">Home</a> <span>›</span> Results</div>
+
+<!-- ========== SEARCH ========== -->
+<section class="search-section">
+  <div class="search-card">
+    <div class="search-head"><svg><use href="#i-search"/></svg> Check Result</div>
+    <form id="resultForm" class="search-body" novalidate>
+      <label for="regInput">Registration Number</label>
+      <div class="input-row">
+        <input id="regInput" name="reg" type="text" placeholder="e.g. 1001" autocomplete="off" maxlength="20" aria-describedby="regError">
+        <button type="submit" class="btn-search" id="searchBtn">Search</button>
+        <button type="reset" class="btn-reset" id="resetBtn">Reset</button>
+      </div>
+      <p class="field-error" id="regError" role="alert" hidden></p>
+      <p class="demo-hint">
+        <strong>Demo only</strong> – this page uses sample data. Try:
+        <button type="button" class="chip" data-reg="1001">1001</button>
+        <button type="button" class="chip" data-reg="1002">1002</button>
+        <button type="button" class="chip" data-reg="1003">1003</button>
+      </p>
+    </form>
+  </div>
+</section>
+
+<!-- ========== RESULT OUTPUT ========== -->
+<section class="result-section" id="resultArea" aria-live="polite" hidden></section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="site-footer">
+  <div class="foot-inner">
+    <ul class="foot-col">
+      <li><a href="#">Footer link one</a></li>
+      <li><a href="#">Publications</a></li>
+    </ul>
+    <div class="foot-center">
+      <span class="logo-circle big"><svg><use href="#i-shield"/></svg></span>
+    </div>
+    <ul class="foot-col">
+      <li><a href="#">Footer link two</a></li>
+      <li><a href="#">Wanted Persons</a></li>
+    </ul>
+    <ul class="foot-col">
+      <li><a href="#">Forms</a></li>
+      <li><a href="#">Webmail</a></li>
+    </ul>
+    <div class="foot-social">
+      <a href="#" class="soc soc-1" aria-label="Social 1">f</a>
+      <a href="#" class="soc soc-2" aria-label="Social 2">▶</a>
+      <a href="#" class="soc soc-3" aria-label="Social 3">t</a>
+    </div>
+  </div>
+  <div class="foot-bottom">All rights reserved | Copyright © 0000 – 0000 | Maintained by Your Company Name</div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  /* Mobile menu */
+  var menuToggle = document.getElementById('menuToggle');
+  var mainNav = document.getElementById('mainNav');
+  if (menuToggle && mainNav) {
+    menuToggle.addEventListener('click', function () { mainNav.classList.toggle('open'); });
+  }
+  /* Back to top */
+  var toTop = document.getElementById('toTop');
+  if (toTop) {
+    window.addEventListener('scroll', function () { toTop.classList.toggle('show', window.scrollY > 500); });
+    toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  }
+  /* Placeholder links do nothing */
+  document.querySelectorAll('a[href="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); });
+  });
+})();
+
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     DEMO DATA – SAMPLE RECORDS ONLY
+     Replace this object (or the findResult() function below) with your
+     real data source. Each key is a registration number.
+     ===================================================================== */
+  var RESULTS = {
+    '1001': {
+      name: 'Student Name One', father: 'Father Name One', mother: 'Mother Name One',
+      roll: '250101', reg: '1001', institution: 'Sample College One',
+      exam: 'Sample Examination 2026', session: '2024-25', group: 'Science',
+      subjects: [
+        { code: '101', name: 'Subject A', marks: 86 },
+        { code: '102', name: 'Subject B', marks: 78 },
+        { code: '103', name: 'Subject C', marks: 91 },
+        { code: '104', name: 'Subject D', marks: 72 },
+        { code: '105', name: 'Subject E', marks: 83 },
+        { code: '106', name: 'Subject F', marks: 67 }
+      ]
+    },
+    '1002': {
+      name: 'Student Name Two', father: 'Father Name Two', mother: 'Mother Name Two',
+      roll: '250102', reg: '1002', institution: 'Sample College Two',
+      exam: 'Sample Examination 2026', session: '2024-25', group: 'Commerce',
+      subjects: [
+        { code: '101', name: 'Subject A', marks: 55 },
+        { code: '102', name: 'Subject B', marks: 48 },
+        { code: '103', name: 'Subject C', marks: 62 },
+        { code: '104', name: 'Subject D', marks: 41 },
+        { code: '105', name: 'Subject E', marks: 58 },
+        { code: '106', name: 'Subject F', marks: 70 }
+      ]
+    },
+    '1003': {
+      name: 'Student Name Three', father: 'Father Name Three', mother: 'Mother Name Three',
+      roll: '250103', reg: '1003', institution: 'Sample College Three',
+      exam: 'Sample Examination 2026', session: '2024-25', group: 'Arts',
+      subjects: [
+        { code: '101', name: 'Subject A', marks: 60 },
+        { code: '102', name: 'Subject B', marks: 29 },
+        { code: '103', name: 'Subject C', marks: 52 },
+        { code: '104', name: 'Subject D', marks: 45 },
+        { code: '105', name: 'Subject E', marks: 38 },
+        { code: '106', name: 'Subject F', marks: 49 }
+      ]
+    }
+  };
+
+  /* =====================================================================
+     PDF RESULTS
+     Put the PDF file in the SAME folder as this HTML file, then write its
+     exact file name in "pdf" below.
+     To add another number later, copy the whole block and change the number.
+
+     viva     : true = show the "Selected for Viva" notice over the PDF
+                false / remove the line = no notice
+     vivaText : the message shown inside the notice
+     ===================================================================== */
+  var PDF_RESULTS = {
+    '21234567890': {
+      reg: '21234567890',
+      title: 'Result Sheet',
+      pdf: 'result.pdf',          /* <-- change to your PDF file name */
+      viva: true,
+      vivaText: 'Your exam date is 3 Nov 2026'  /* <-- write your viva message here */
+    }
+  };
+
+  /* ---------- Grading (edit the scale to match your system) ---------- */
+  function gradeFor(marks) {
+    if (marks >= 80) return { g: 'A+', p: 5 };
+    if (marks >= 70) return { g: 'A', p: 4 };
+    if (marks >= 60) return { g: 'A-', p: 3.5 };
+    if (marks >= 50) return { g: 'B', p: 3 };
+    if (marks >= 40) return { g: 'C', p: 2 };
+    if (marks >= 33) return { g: 'D', p: 1 };
+    return { g: 'F', p: 0 };
+  }
+
+  function letterFromGpa(g) {
+    if (g >= 5) return 'A+';
+    if (g >= 4) return 'A';
+    if (g >= 3.5) return 'A-';
+    if (g >= 3) return 'B';
+    if (g >= 2) return 'C';
+    if (g >= 1) return 'D';
+    return 'F';
+  }
+
+  function summarize(subjects) {
+    var total = 0, points = 0, failed = false;
+    var rows = subjects.map(function (s) {
+      var gr = gradeFor(s.marks);
+      total += s.marks;
+      points += gr.p;
+      if (gr.p === 0) failed = true;
+      return { code: s.code, name: s.name, marks: s.marks, grade: gr.g, point: gr.p };
+    });
+    var gpa = failed || !rows.length ? 0 : points / rows.length;
+    return {
+      rows: rows,
+      total: total,
+      max: rows.length * 100,
+      gpa: gpa,
+      letter: failed ? 'F' : letterFromGpa(gpa),
+      passed: !failed
+    };
+  }
+
+  function normalize(value) {
+    return String(value || '').replace(/\s+/g, '').toUpperCase();
+  }
+
+  function isValidReg(value) {
+    return /^[A-Z0-9-]{3,20}$/.test(value);
+  }
+
+  /* ---------- Data lookup (swap this for a real API call) ----------
+     Looks in the normal results first, then in the PDF results.
+     Example:
+       return fetch('/api/result?reg=' + encodeURIComponent(reg))
+         .then(function (r) { return r.ok ? r.json() : null; });
+  ------------------------------------------------------------------- */
+  function findResult(reg) {
+    return new Promise(function (resolve) {
+      setTimeout(function () { resolve(RESULTS[reg] || PDF_RESULTS[reg] || null); }, 500);
+    });
+  }
+
+  /* =====================================================================
+     UI
+     ===================================================================== */
+  var form = document.getElementById('resultForm');
+  var input = document.getElementById('regInput');
+  var errorBox = document.getElementById('regError');
+  var searchBtn = document.getElementById('searchBtn');
+  var area = document.getElementById('resultArea');
+  if (!form || !input || !area) return;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.hidden = false;
+    input.classList.add('invalid');
+  }
+  function clearError() {
+    errorBox.hidden = true;
+    errorBox.textContent = '';
+    input.classList.remove('invalid');
+  }
+  function clearResult() {
+    area.hidden = true;
+    area.innerHTML = '';
+  }
+
+  function infoRow(label, value) {
+    return '<div><dt>' + esc(label) + '</dt><dd>' + esc(value) + '</dd></div>';
+  }
+
+  /* "Search Another" button – used by both result types */
+  function wireAgain() {
+    document.getElementById('againBtn').addEventListener('click', function () {
+      form.reset();
+      clearError();
+      clearResult();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      input.focus();
+    });
+  }
+
+  /* ---------- PDF result: viewer + Download button + Viva notice ---------- */
+  function renderPdf(r) {
+    var url = esc(r.pdf);
+    area.innerHTML =
+      '<div class="result-frame"><div class="result-card">' +
+        '<div class="rc-head">' +
+          '<span class="logo-circle"><svg><use href="#i-shield"/></svg></span>' +
+          '<div class="rc-title"><strong>BANGLADESH POLICE</strong><small>' + esc(r.title) + '</small></div>' +
+        '</div>' +
+        '<dl class="rc-info">' + infoRow('Registration No.', r.reg) + '</dl>' +
+        '<div class="pdf-box vvn-wrap">' +
+          (r.viva
+            ? '<div class="vvn-notice" id="vvnNotice" role="status">' +
+                '<span class="vvn-icon" aria-hidden="true">&#10004;</span>' +
+                '<div class="vvn-body">' +
+                  '<strong class="vvn-title">Selected for Written Exam</strong>' +
+                  '<span class="vvn-text">' + esc(r.vivaText || '') + '</span>' +
+                '</div>' +
+                '<button type="button" class="vvn-close" id="vvnClose" aria-label="Close notice">×</button>' +
+              '</div>'
+            : '') +
+          '<object data="' + url + '" type="application/pdf">' +
+            '<p class="pdf-fallback">Your browser cannot show the PDF here. Please use the buttons below to open or download it.</p>' +
+          '</object>' +
+        '</div>' +
+        '<div class="rc-actions">' +
+          '<a class="btn-download" href="' + url + '" download><svg><use href="#i-download"/></svg> Download PDF</a>' +
+          '<a class="btn-open" href="' + url + '" target="_blank" rel="noopener">Open in new tab</a>' +
+          '<button type="button" class="alt" id="againBtn"><svg><use href="#i-search"/></svg> Search Another</button>' +
+        '</div>' +
+      '</div></div>';
+    area.hidden = false;
+
+    var vvnClose = document.getElementById('vvnClose');
+    if (vvnClose) {
+      vvnClose.addEventListener('click', function () {
+        document.getElementById('vvnNotice').classList.add('vvn-hide');
+      });
+    }
+
+    wireAgain();
+    area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function render(r) {
+    var s = summarize(r.subjects);
+    var rowsHtml = s.rows.map(function (x) {
+      return '<tr><td>' + esc(x.code) + '</td><td>' + esc(x.name) + '</td><td>' + x.marks + '</td>' +
+        '<td class="' + (x.grade === 'F' ? 'fail-grade' : '') + '">' + x.grade + '</td>' +
+        '<td>' + x.point.toFixed(2) + '</td></tr>';
+    }).join('');
+
+    area.innerHTML =
+      '<div class="result-frame"><div class="result-card">' +
+        '<div class="rc-head">' +
+          '<span class="logo-circle"><svg><use href="#i-shield"/></svg></span>' +
+          '<div class="rc-title"><strong>Bangladesh Police</strong><small>' + esc(r.exam) + ' – Result Sheet</small></div>' +
+          '<span class="status ' + (s.passed ? 'pass' : 'fail') + '">' + (s.passed ? 'PASSED' : 'FAILED') + '</span>' +
+        '</div>' +
+        '<p class="sample-ribbon">SAMPLE DATA – for demonstration only, not a real result</p>' +
+        '<dl class="rc-info">' +
+          infoRow('Student Name', r.name) + infoRow('Registration No.', r.reg) +
+          infoRow("Father's Name", r.father) + infoRow('Roll No.', r.roll) +
+          infoRow("Mother's Name", r.mother) + infoRow('Session', r.session) +
+          infoRow('Institution', r.institution) + infoRow('Group', r.group) +
+        '</dl>' +
+        '<div class="table-wrap"><table class="rc-table">' +
+          '<thead><tr><th>Code</th><th>Subject</th><th>Marks</th><th>Grade</th><th>Point</th></tr></thead>' +
+          '<tbody>' + rowsHtml + '</tbody></table></div>' +
+        '<div class="rc-summary">' +
+          '<div class="tile"><small>Total Marks</small><strong>' + s.total + ' / ' + s.max + '</strong></div>' +
+          '<div class="tile"><small>GPA</small><strong>' + s.gpa.toFixed(2) + '</strong></div>' +
+          '<div class="tile"><small>Final Grade</small><strong>' + s.letter + '</strong></div>' +
+          '<div class="tile ' + (s.passed ? 'ok' : 'bad') + '"><small>Result</small><strong>' + (s.passed ? 'Passed' : 'Failed') + '</strong></div>' +
+        '</div>' +
+        '<div class="rc-actions">' +
+          '<button type="button" id="printBtn"><svg><use href="#i-print"/></svg> Print</button>' +
+          '<button type="button" class="alt" id="againBtn"><svg><use href="#i-search"/></svg> Search Another</button>' +
+        '</div>' +
+        '<p class="rc-note">Result generated from the data provided by the examination authority.</p>' +
+      '</div></div>';
+    area.hidden = false;
+
+    document.getElementById('printBtn').addEventListener('click', function () { window.print(); });
+    wireAgain();
+    area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function search(rawValue) {
+    var reg = normalize(rawValue);
+    clearError();
+    clearResult();
+
+    if (!reg) { showError('Please enter your registration number.'); input.focus(); return; }
+    if (!isValidReg(reg)) {
+      showError('Registration number must be 3–20 characters (letters, digits or hyphen only).');
+      input.focus();
+      return;
+    }
+
+    searchBtn.disabled = true;
+    area.hidden = false;
+    area.innerHTML = '<div class="loading"><span class="spinner"></span> Searching for registration number ' + esc(reg) + '…</div>';
+
+    findResult(reg).then(function (data) {
+      if (data && data.pdf) {
+        renderPdf(data);
+      } else if (data) {
+        render(data);
+      } else {
+        area.innerHTML = '<div class="notfound"><strong>No result found</strong>No published result matches registration number ' +
+          esc(reg) + '. Please check the number and try again.</div>';
+      }
+    }).catch(function () {
+      area.innerHTML = '<div class="notfound"><strong>Something went wrong</strong>Could not load the result. Please try again later.</div>';
+    }).then(function () {
+      searchBtn.disabled = false;
+    });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    search(input.value);
+  });
+  form.addEventListener('reset', function () {
+    clearError();
+    clearResult();
+  });
+  input.addEventListener('input', clearError);
+
+  document.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      input.value = chip.getAttribute('data-reg');
+      search(input.value);
+    });
+  });
+
+  /* Support direct links such as result.html?reg=1001 */
+  try {
+    var preset = new URLSearchParams(window.location.search).get('reg');
+    if (preset) { input.value = preset; search(preset); }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
