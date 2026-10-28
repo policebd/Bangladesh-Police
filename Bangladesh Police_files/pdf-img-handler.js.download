@@ -1,0 +1,860 @@
+(function() {
+    'use strict';
+    
+    console.log('Enhanced Fast File Viewer Loaded - Fixed Link Issue');
+    
+    const POLICE_BASE_URL = window.policeBaseUrl;
+    
+    const fileCache = new Map();
+    
+    function openFileInNewTab(url, fileName = '') {
+        let fullUrl = url;
+        
+        if (!url.startsWith('http')) {
+            if (url.startsWith('/')) {
+                fullUrl = POLICE_BASE_URL + url;
+            } else {
+                fullUrl = POLICE_BASE_URL + '/' + url;
+            }
+        }
+        
+        console.log('Opening in new tab:', fullUrl);
+        
+        const extension = fullUrl.split('.').pop().toLowerCase();
+        const isImage = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].includes(extension);
+        const isPDF = extension === 'pdf';
+
+        if (isImage) {
+            window.open(fullUrl, '_blank');
+        } else if (isPDF) {
+            openPDFInNewTab(fullUrl, fileName);
+        } else {
+            window.open(fullUrl, '_blank');
+        }
+    }
+    
+    function openImageInNewTab(url, fileName) {
+        const newTab = window.open('', '_blank');
+        
+        if (!newTab) {
+            alert('Please allow popups or check popup blocker');
+            window.open(url, '_blank');
+            return;
+        }
+        
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${fileName || 'Image'}</title>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    * { 
+                        margin: 0; 
+                        padding: 0; 
+                        box-sizing: border-box; 
+                    }
+                    
+                    body { 
+                        background: #1a1a2e; 
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        min-height: 100vh;
+                        overflow: auto;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    
+                    .header {
+                        background: rgba(52, 73, 94, 0.95);
+                        color: white;
+                        padding: 12px 20px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        position: sticky;
+                        top: 0;
+                        z-index: 1000;
+                        backdrop-filter: blur(10px);
+                        border-bottom: 1px solid rgba(255,255,255,0.1);
+                    }
+                    
+                    .file-info {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        max-width: 60%;
+                    }
+                    
+                    .file-name {
+                        font-size: 16px;
+                        font-weight: 500;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                    
+                    .controls {
+                        display: flex;
+                        gap: 8px;
+                        flex-wrap: wrap;
+                    }
+                    
+                    .btn {
+                        background: rgba(52, 152, 219, 0.9);
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        text-decoration: none;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .btn:hover {
+                        background: rgba(41, 128, 185, 0.9);
+                        transform: translateY(-1px);
+                    }
+                    
+                    .btn i {
+                        font-size: 14px;
+                    }
+                    
+                    .btn-close {
+                        background: rgba(231, 76, 60, 0.9);
+                    }
+                    
+                    .btn-close:hover {
+                        background: rgba(192, 57, 43, 0.9);
+                    }
+                    
+                    .content {
+                        flex: 1;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 20px;
+                        min-height: calc(100vh - 60px);
+                    }
+                    
+                    .image-container {
+                        max-width: 100%;
+                        max-height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        transition: transform 0.3s ease;
+                    }
+                    
+                    #viewer-image {
+                        max-width: 95vw;
+                        max-height: 85vh;
+                        object-fit: contain;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                        border-radius: 8px;
+                        transition: all 0.3s;
+                    }
+                    
+                    .loading {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 15px;
+                        color: #7f8c8d;
+                    }
+                    
+                    .loading-spinner {
+                        width: 40px;
+                        height: 40px;
+                        border: 4px solid #f3f3f3;
+                        border-top: 4px solid #3498db;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                    }
+                    
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    
+                    .zoom-controls {
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                        z-index: 1000;
+                    }
+                    
+                    .zoom-btn {
+                        width: 45px;
+                        height: 45px;
+                        border-radius: 50%;
+                        background: rgba(52, 152, 219, 0.9);
+                        color: white;
+                        border: none;
+                        font-size: 18px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                        transition: all 0.2s;
+                    }
+                    
+                    .zoom-btn:hover {
+                        background: rgba(41, 128, 185, 0.9);
+                        transform: scale(1.1);
+                    }
+                    
+                    .zoom-display {
+                        position: fixed;
+                        bottom: 20px;
+                        left: 20px;
+                        background: rgba(0,0,0,0.7);
+                        color: white;
+                        padding: 8px 15px;
+                        border-radius: 20px;
+                        font-size: 14px;
+                        z-index: 1000;
+                    }
+                    
+                    .error {
+                        text-align: center;
+                        padding: 40px;
+                        color: #e74c3c;
+                    }
+                    
+                    .error h3 {
+                        margin-bottom: 15px;
+                    }
+                    
+                    @media (max-width: 768px) {
+                        .header {
+                            flex-direction: column;
+                            gap: 10px;
+                            padding: 10px;
+                        }
+                        
+                        .file-info {
+                            max-width: 100%;
+                            justify-content: center;
+                        }
+                        
+                        .controls {
+                            justify-content: center;
+                        }
+                        
+                        #viewer-image {
+                            max-width: 98vw;
+                            max-height: 80vh;
+                        }
+                        
+                        .zoom-controls {
+                            bottom: 10px;
+                            right: 10px;
+                        }
+                        
+                        .zoom-btn {
+                            width: 40px;
+                            height: 40px;
+                        }
+                        
+                        .zoom-display {
+                            bottom: 10px;
+                            left: 10px;
+                            font-size: 12px;
+                        }
+                    }
+                </style>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            </head>
+            <body>
+                <div class="header">
+                    <div class="file-info">
+                        <i class="fas fa-image" style="font-size: 20px; color: #3498db;"></i>
+                        <div class="file-name" title="${fileName || 'Image'}">${fileName || 'Image Viewer'}</div>
+                    </div>
+                    
+                    <div class="controls">
+                        <a href="${url}" download class="btn">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <button onclick="window.print()" class="btn">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button onclick="closeViewer()" class="btn btn-close">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="content">
+                    <div class="image-container" id="imageContainer">
+                        <img id="viewer-image" 
+                             src="${url}" 
+                             alt="${fileName || 'Image'}"
+                             onload="hideLoading()"
+                             onerror="showError()">
+                        
+                        <div class="loading" id="loading">
+                            <div class="loading-spinner"></div>
+                            <div>Loading image...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="error" id="errorPanel" style="display: none;">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Failed to load image</h3>
+                        <p>The image could not be loaded. You can try:</p>
+                        <div style="margin-top: 15px;">
+                            <a href="${url}" download class="btn">
+                                <i class="fas fa-download"></i> Download Instead
+                            </a>
+                            <button onclick="window.location.reload()" class="btn" style="margin-left: 10px;">
+                                <i class="fas fa-sync"></i> Retry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="zoom-controls">
+                    <button class="zoom-btn" onclick="zoomIn()" title="Zoom In (Ctrl + +)">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out (Ctrl + -)">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom (0)">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="zoom-btn" onclick="toggleFullscreen()" title="Fullscreen (F)">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                
+                <div class="zoom-display" id="zoomDisplay">
+                    Zoom: 100%
+                </div>
+                
+                <script>
+                    let scale = 1;
+                    let isFullscreen = false;
+                    
+                    function closeViewer() {
+                        if (window.opener) {
+                            window.close();
+                        } else {
+                            window.history.length > 1 ? window.history.back() : window.close();
+                        }
+                    }
+                    
+                    function hideLoading() {
+                        const loading = document.getElementById('loading');
+                        if (loading) loading.style.display = 'none';
+                        
+                        const viewerImage = document.getElementById('viewer-image');
+                        if (viewerImage) viewerImage.style.display = 'block';
+                    }
+                    
+                    function showError() {
+                        const loading = document.getElementById('loading');
+                        if (loading) loading.style.display = 'none';
+                        
+                        const errorPanel = document.getElementById('errorPanel');
+                        if (errorPanel) errorPanel.style.display = 'block';
+                    }
+                    
+                    function zoomIn() {
+                        scale = Math.min(scale + 0.25, 5);
+                        updateZoom();
+                    }
+                    
+                    function zoomOut() {
+                        scale = Math.max(scale - 0.25, 0.25);
+                        updateZoom();
+                    }
+                    
+                    function resetZoom() {
+                        scale = 1;
+                        updateZoom();
+                    }
+                    
+                    function updateZoom() {
+                        const img = document.getElementById('viewer-image');
+                        if (img) {
+                            img.style.transform = \`scale(\${scale})\`;
+                        }
+                        
+                        const zoomDisplay = document.getElementById('zoomDisplay');
+                        if (zoomDisplay) {
+                            zoomDisplay.textContent = \`Zoom: \${Math.round(scale * 100)}%\`;
+                        }
+                    }
+                    
+                    function toggleFullscreen() {
+                        if (!isFullscreen) {
+                            document.documentElement.requestFullscreen().catch(err => {
+                                console.log(\`Fullscreen error: \${err.message}\`);
+                            });
+                            isFullscreen = true;
+                        } else {
+                            document.exitFullscreen();
+                            isFullscreen = false;
+                        }
+                    }
+                    
+                    document.addEventListener('wheel', function(e) {
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            if (e.deltaY < 0) {
+                                zoomIn();
+                            } else {
+                                zoomOut();
+                            }
+                        }
+                    }, { passive: false });
+                    
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            if (document.fullscreenElement) {
+                                document.exitFullscreen();
+                            } else {
+                                closeViewer();
+                            }
+                        }
+                        
+                        if ((e.key === '+' || e.key === '=') && (e.ctrlKey || e.metaKey)) {
+                            e.preventDefault();
+                            zoomIn();
+                        }
+                        if ((e.key === '-' || e.key === '_') && (e.ctrlKey || e.metaKey)) {
+                            e.preventDefault();
+                            zoomOut();
+                        }
+                        
+                        if (e.key === '0') {
+                            resetZoom();
+                        }
+                        
+                        if (e.key === 'f' || e.key === 'F') {
+                            toggleFullscreen();
+                        }
+                        
+                        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            window.scrollBy(0, e.key === 'ArrowUp' ? -100 : 100);
+                        }
+                    });
+                    
+                    window.addEventListener('load', function() {
+                        document.title = \`\${document.title} - \${window.location.hostname}\`;
+                        setTimeout(hideLoading, 5000);
+                    });
+                    
+                    setTimeout(hideLoading, 10000);
+                <\/script>
+            </body>
+            </html>
+        `;
+        
+        newTab.document.open();
+        newTab.document.write(html);
+        newTab.document.close();
+        
+        newTab.focus();
+    }
+    
+    function openPDFInNewTab(url, fileName) {
+        let fullUrl = url;
+        if (!url.startsWith('http')) {
+            if (url.startsWith('/')) {
+                fullUrl = POLICE_BASE_URL + url;
+            } else {
+                fullUrl = POLICE_BASE_URL + '/' + url;
+            }
+        }
+        
+        console.log('Opening PDF in new tab:', fullUrl);
+        
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            console.log('📱 Mobile device detected, using special PDF handling');
+            
+            const mobileTab = window.open('', '_blank');
+            
+            if (!mobileTab) {
+                alert('PDF খুলতে পারছি না। পপআপ ব্লকার বন্ধ করুন অথবা ডাউনলোড করুন।');
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.href = fullUrl;
+                downloadLink.download = fileName || 'document.pdf';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                return;
+            }
+            
+            const mobileHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${fileName || 'PDF'}</title>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { 
+                            background: #2c3e50; 
+                            font-family: Arial, sans-serif;
+                            min-height: 100vh;
+                            overflow: hidden;
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        .header {
+                            background: #34495e;
+                            padding: 12px 15px;
+                            color: white;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
+                        .btn {
+                            background: #3498db;
+                            color: white;
+                            border: none;
+                            padding: 8px 15px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            text-decoration: none;
+                            font-size: 14px;
+                        }
+                        .btn:hover {
+                            background: #2980b9;
+                        }
+                        .container {
+                            flex: 1;
+                            display: flex;
+                        }
+                        #pdfFrame {
+                            flex: 1;
+                            border: none;
+                            background: white;
+                        }
+                        .fallback {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 20px;
+                            color: white;
+                            text-align: center;
+                        }
+                        .loading {
+                            color: white;
+                            text-align: center;
+                            padding: 40px;
+                        }
+                        @media (max-width: 768px) {
+                            .header {
+                                flex-direction: column;
+                                gap: 10px;
+                                text-align: center;
+                            }
+                            .container {
+                                height: calc(100vh - 120px);
+                            }
+                            #pdfFrame {
+                                height: 100%;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div style="font-weight: bold; font-size: 16px;">${fileName || 'PDF Viewer'}</div>
+                        <div style="display: flex; gap: 10px;">
+                            <a href="${fullUrl}" download class="btn">Download</a>
+                            <button onclick="window.close()" class="btn" style="background:#e74c3c;">Close</button>
+                        </div>
+                    </div>
+                    
+                    <div class="container">
+                        <iframe id="pdfFrame" 
+                                src="${fullUrl}" 
+                                width="100%" 
+                                height="100%"
+                                frameborder="0">
+                        </iframe>
+                        <div class="loading" id="loading">Loading PDF...</div>
+                    </div>
+                    
+                    <script>
+                        const frame = document.getElementById('pdfFrame');
+                        const loading = document.getElementById('loading');
+                        
+                        frame.onload = function() {
+                            if (loading) loading.style.display = 'none';
+                            console.log('PDF loaded successfully on mobile');
+                        };
+                        
+                        frame.onerror = function() {
+                            if (loading) {
+                                loading.innerHTML = 
+                                    'PDF লোড হতে সমস্যা হচ্ছে।<br>' +
+                                    '<a href="${fullUrl}" download class="btn" style="margin-top:15px;">Download Instead</a>';
+                            }
+                        };
+                        
+                        setTimeout(function() {
+                            if (loading && loading.style.display !== 'none') {
+                                loading.innerHTML = 
+                                    'PDF লোড হতে বেশি সময় নিচ্ছে।<br>' +
+                                    '<a href="${fullUrl}" target="_blank" class="btn" style="margin-top:15px;">Open Directly</a>' +
+                                    '<a href="${fullUrl}" download class="btn" style="margin-top:10px;">Download</a>';
+                            }
+                        }, 8000);
+                        
+                        document.addEventListener('keydown', function(e) {
+                            if (e.key === 'Escape') window.close();
+                        });
+                    <\/script>
+                </body>
+                </html>
+            `;
+            
+            mobileTab.document.open();
+            mobileTab.document.write(mobileHTML);
+            mobileTab.document.close();
+            mobileTab.focus();
+        } else {
+            const pdfTab = window.open(fullUrl, '_blank');
+            
+            if (!pdfTab) {
+                console.log('Popup blocked, trying fallback...');
+                
+                try {
+                    window.location.href = fullUrl;
+                } catch (e) {
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = fullUrl;
+                    downloadLink.download = fileName || 'document.pdf';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                }
+            }
+        }
+    }
+    
+    
+    function isImageInsideLink(element) {
+        const link = element.closest('a[href]');
+        if (!link) return false;
+        
+        const href = link.getAttribute('href');
+        if (!href) return false;
+        
+        return true;
+    }
+    
+    
+    function setupSimpleHandlers() {
+        console.log('Setting up fixed simple handlers...');
+        
+        document.addEventListener('click', function(e) {
+            let target = e.target;
+            let link = target.closest('a[href]');
+            
+            
+            if (link) {
+                
+                const isSpecialArea = link.closest('#staticsidenavright') || 
+                                    link.closest('.rightnavbox') ||
+                                    link.closest('.fixed.padding-top-1.rightnavbox') ||
+                                    link.parentElement.classList.contains('cursor-pointer');
+                
+                if (isSpecialArea) {
+                    console.log('Special area link clicked - allowing default behavior');
+                    return; 
+                }
+                
+                const href = link.getAttribute('href');
+                if (!href) return;
+                
+                
+                const isFileLink = href.match(/\.(jpg|jpeg|png|gif|bmp|webp|svg|pdf)$/i) ||
+                                  href.includes('/storage/') ||
+                                  href.includes('/upload/');
+                
+                
+                if (isFileLink) {
+                    
+                    const img = link.querySelector('img');
+                    if (img) {
+                        const imgSrc = img.getAttribute('src');
+                        const isIconImage = imgSrc && (
+                            imgSrc.includes('services3_icon.png') ||
+                            imgSrc.includes('infolist-1.png') ||
+                            imgSrc.includes('mobile-app.png') ||
+                            imgSrc.includes('icons/')
+                        );
+                        
+                        if (isIconImage) {
+                            console.log('Icon image inside link - allowing default behavior');
+                            return; 
+                        }
+                    }
+                    
+                    
+                    if (!link.hasAttribute('download')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const fileName = link.textContent.trim() || 
+                                       link.getAttribute('title') || 
+                                       link.querySelector('img')?.getAttribute('alt') || 
+                                       'File';
+                        openFileInNewTab(href, fileName);
+                    }
+                    return;
+                }
+                
+                
+                console.log('Normal web link - allowing default behavior');
+                return; 
+            }
+            
+            
+            if (target.tagName === 'IMG' && !target.closest('a[href]')) {
+                const src = target.getAttribute('src');
+                if (!src) return;
+                
+                
+                const isFileImage = src.match(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i) ||
+                                   src.includes('/storage/') ||
+                                   src.includes('/upload/');
+                
+                
+                const isIconImage = src.includes('services3_icon.png') ||
+                                   src.includes('infolist-1.png') ||
+                                   src.includes('mobile-app.png') ||
+                                   src.includes('icons/');
+                
+                if (isFileImage && !isIconImage) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const altText = target.getAttribute('alt') || 
+                                  target.getAttribute('title') || 
+                                  'Image';
+                    openFileInNewTab(src, altText);
+                }
+                return;
+            }
+        }, true);
+    }
+    
+    function setupModalHandlers() {
+        document.querySelectorAll('[data-target], [data-toggle="modal"]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const target = this.getAttribute('data-target');
+                if (!target) return;
+                
+                const modalId = target.replace('#', '');
+                const modal = document.getElementById(modalId);
+                
+                if (modal) {
+                    const img = modal.querySelector('img[src]');
+                    const link = modal.querySelector('a[href*="."]');
+                    
+                    if (img) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const altText = img.getAttribute('alt') || 'Image';
+                        openFileInNewTab(img.getAttribute('src'), altText);
+                    } else if (link) {
+                        const href = link.getAttribute('href');
+                        if (href && href.match(/\.(pdf|jpg|jpeg|png|gif|bmp|webp|svg)$/i)) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const fileName = link.textContent.trim() || 'File';
+                            openFileInNewTab(href, fileName);
+                        }
+                    }
+                }
+            }, true);
+        });
+    }
+    
+    function setupTargetAttributes() {
+        document.querySelectorAll('a[href]').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && (href.includes('/storage/') || 
+                         href.includes('/upload/') ||
+                         href.match(/\.(pdf|jpg|jpeg|png|gif|bmp|webp|svg)$/i))) {
+                
+                if (!link.hasAttribute('download')) {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                    
+                    if (!link.hasAttribute('title')) {
+                        link.setAttribute('title', 'Opens in new tab');
+                    }
+                }
+            }
+        });
+        
+        
+        document.querySelectorAll('img').forEach(img => {
+            const src = img.getAttribute('src');
+            if (src && (src.includes('/storage/') || src.includes('/upload/'))) {
+                
+                const link = img.closest('a[href]');
+                if (!link) {
+                    img.style.cursor = 'pointer';
+                }
+            }
+        });
+    }
+    
+    function preloadImportantFiles() {
+        const images = document.querySelectorAll('img[src*="/storage/"], img[src*="/upload/"]');
+        for (let i = 0; i < Math.min(2, images.length); i++) {
+            const img = new Image();
+            img.src = images[i].getAttribute('src');
+            fileCache.set(img.src, img);
+        }
+    }
+    
+    function init() {
+        try {
+            // setupTargetAttributes();
+            // setupSimpleHandlers();
+            setupModalHandlers();
+            setTimeout(preloadImportantFiles, 1000);
+            console.log('✅ File viewer initialized - Fixed Link Issue Version');
+        } catch (error) {
+            console.error('Error initializing file viewer:', error);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        setTimeout(init, 100);
+    }
+    
+    window.addEventListener('resize', function() {
+        setTimeout(setupTargetAttributes, 300);
+    });
+    
+    window.openInNewTab = openFileInNewTab;
+    
+})();
