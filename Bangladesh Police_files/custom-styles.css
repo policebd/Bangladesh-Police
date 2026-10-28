@@ -1,0 +1,864 @@
+/*Include new font*/
+/*@font-face {
+  font-family: solaimanlipi;
+  src: url(../fonts/SolaimanLipi_22-02-2012.ttf);
+}*/
+
+@font-face {
+    font-family: 'Nikosh';
+    src: url(../fonts/Nikosh.ttf) format('truetype'); 
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; 
+}
+/*Include new font*/
+.bg_grad_5 {
+    background: -webkit-linear-gradient(235deg, rgba(255,255,255,0.0)10%, rgba(255,255,255,0.2)20%, rgba(19,27,67,1)70%), -webkit-linear-gradient(305deg, rgba(150,150,255,0.0)80%, rgba(60,111,162,0.8)20%), -webkit-linear-gradient(325deg, rgba(255,255,255,0.0)70%, rgba(60,111,190,0.7)30%), -webkit-linear-gradient(290deg, rgba(60,111,180,0.9)60%, rgba(60,111,190,0.8)40%) !important;
+    background: -o-linear-gradient(235deg, rgba(255,255,255,0.0)10%, rgba(255,255,255,0.2)20%, rgba(19,27,67,1)70%), -o-linear-gradient(305deg, rgba(150,150,255,0.0)80%, rgba(60,111,162,0.8)20%), -o-linear-gradient(325deg, rgba(255,255,255,0.0)70%, rgba(60,111,190,0.7)30%), -o-linear-gradient(290deg, rgba(60,111,180,0.9)60%, rgba(60,111,190,0.8)40%) !important;
+    background: linear-gradient(-145deg, rgba(255,255,255,0.0)10%, rgba(255,255,255,0.2)20%, rgba(19,27,67,1)70%), linear-gradient(145deg, rgba(150,150,255,0.0)80%, rgba(60,111,162,0.8)20%), linear-gradient(125deg, rgba(255,255,255,0.0)70%, rgba(60,111,190,0.7)30%), linear-gradient(-200deg, rgba(60,111,180,0.9)60%, rgba(60,111,190,0.8)40%) !important;
+}
+.bg_red_gradient_site {
+    background: -webkit-gradient(linear,left bottom, left top,from(#be1e2d),to(#9c1c1a)) !important;
+    background: -webkit-linear-gradient(bottom,#be1e2d,#9c1c1a) !important;
+    background: -o-linear-gradient(bottom,#be1e2d,#9c1c1a) !important;
+    background: linear-gradient(0deg,#be1e2d,#9c1c1a) !important;
+}
+.bg_red_white_2 {
+    background: -webkit-linear-gradient(315deg, #ddaaaa 15%, #ffffff 70%, #992233 15%) !important;
+    background: -o-linear-gradient(315deg, #ddaaaa 15%, #ffffff 70%, #992233 15%) !important;
+    background: linear-gradient(135deg, #ddaaaa 15%, #ffffff 70%, #992233 15%) !important;
+}
+.sf-column-3{
+    -webkit-column-count:3 !important;
+    column-count:3 !important;
+}
+.lnk-3-2 {
+    text-decoration: none;
+    display: block;
+    background: -webkit-linear-gradient(45deg,#131b43,#242c54,#2aabd2);
+    background: -o-linear-gradient(45deg,#131b43,#242c54,#2aabd2);
+    background: linear-gradient(45deg,#131b43,#242c54,#2aabd2);
+    margin-bottom: 1px;
+    line-height: 50px;
+    height: 50px;
+    color: #ffffff;
+    -webkit-transition: ease-in-out 0.2s;
+    -o-transition: ease-in-out 0.2s;
+    transition: ease-in-out 0.2s;
+    font-size: 19px;
+    min-font-size: 16px;
+}
+.lnk-3-2:hover {
+    text-decoration: none;
+    color: #ffffff;
+    -webkit-transform: translate3d(6px, 0, -10px);
+    transform: translate3d(6px, 0, -10px);
+}
+.lnk-3-1 {
+    text-decoration: none;
+    display: block;
+    background: -webkit-linear-gradient(135deg,#131b43,#242c54,#2aabd2);
+    background: -o-linear-gradient(135deg,#131b43,#242c54,#2aabd2);
+    background: linear-gradient(-45deg,#131b43,#242c54,#2aabd2);
+    margin-bottom: 1px;
+    line-height: 50px;
+    height: 50px;
+    color: #ffffff;
+    -webkit-transition: ease-in-out 0.2s;
+    -o-transition: ease-in-out 0.2s;
+    transition: ease-in-out 0.2s;
+    font-size: 19px;
+    min-font-size: 16px;
+}
+.lnk-3-1:hover {
+    text-decoration: none;
+    color: #ffffff;
+    -webkit-transform: translate3d(-6px, 0, 10px);
+    transform: translate3d(-6px, 0, 10px);
+}
+.bg_blue_blue {
+    background: -webkit-linear-gradient(315deg, #344599 70%, #3456aa 30%) !important;
+    background: -o-linear-gradient(315deg, #344599 70%, #3456aa 30%) !important;
+    background: linear-gradient(135deg, #344599 70%, #3456aa 30%) !important;
+}
+.bg_white_gray {
+    background: -webkit-linear-gradient(45deg, #ffffff 50%, #d0d0d0 20%) !important;
+    background: -o-linear-gradient(45deg, #ffffff 50%, #d0d0d0 20%) !important;
+    background: linear-gradient(45deg, #ffffff 50%, #d0d0d0 20%) !important;
+}
+.bg_gray_gradient_1 {
+    background: -webkit-gradient(linear,left bottom, left top,from(#d0d0d0),to(#e0e0e0)) !important;
+    background: -webkit-linear-gradient(bottom,#d0d0d0,#e0e0e0) !important;
+    background: -o-linear-gradient(bottom,#d0d0d0,#e0e0e0) !important;
+    background: linear-gradient(0deg,#d0d0d0,#e0e0e0) !important;
+}
+.mission_head {
+    background: -webkit-linear-gradient(45deg,rgba(255,255,255,0),rgba(0,0,0,0),rgba(0,0,0,1));
+    background: -o-linear-gradient(45deg,rgba(255,255,255,0),rgba(0,0,0,0),rgba(0,0,0,1));
+    background: linear-gradient(45deg,rgba(255,255,255,0),rgba(0,0,0,0),rgba(0,0,0,1));
+}
+.mission_head_child {
+    background: -webkit-linear-gradient(45deg,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1));
+    background: -o-linear-gradient(45deg,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1));
+    background: linear-gradient(45deg,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1));
+    font-size: 7em;
+}
+.vision_head {
+    background: -webkit-linear-gradient(135deg,rgba(255,255,255,0),rgba(0,0,0,0),rgba(0,0,0,1));
+    background: -o-linear-gradient(135deg,rgba(255,255,255,0),rgba(0,0,0,0),rgba(0,0,0,1));
+    background: linear-gradient(-45deg,rgba(255,255,255,0),rgba(0,0,0,0),rgba(0,0,0,1));
+    border-radius: 200px 0 0 200px;
+    padding: 5px 0 5px 5px;
+    display: block;
+    text-align: left;
+}
+.vision_head_child {
+    background: -webkit-linear-gradient(135deg,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1));
+    background: -o-linear-gradient(135deg,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1));
+    background: linear-gradient(-45deg,rgba(255,255,255,0),rgba(255,255,255,1),rgba(255,255,255,1));
+    border-radius: 200px 0 0 200px;
+    padding: 10px 20px;
+    display: block;
+    font-size: 7em;
+}
+/*.bg_img_10_1 {
+    background: -webkit-radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 9%, hsla(0, 100%, 20%, 0) 9%) 0 0, -webkit-radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 8%, hsla(0, 100%, 20%, 0) 10%) 50px 50px, -webkit-radial-gradient(hsla(0, 30%, 100%, 0.8) 20%, hsla(0, 20%, 100%, 0)) 50px 0, -webkit-radial-gradient(hsla(0, 30%, 100%, 0.8) 20%, hsla(0, 20%, 100%, 0)) 0 50px, -webkit-radial-gradient(hsla(0, 20%, 100%, 1) 35%, hsla(0, 20%, 100%, 0) 60%) 50px 0, -webkit-radial-gradient(hsla(0, 20%, 100%, 1) 35%, hsla(0, 20%, 100%, 0) 60%) 100px 50px, -webkit-radial-gradient(hsla(0, 15%, 100%, 0.7), hsla(0, 20%, 100%, 0)) 0 0, -webkit-radial-gradient(hsla(0, 15%, 100%, 0.7), hsla(0, 20%, 100%, 0)) 50px 50px, -webkit-linear-gradient(45deg, hsla(0, 20%, 100%, 0) 49%, hsla(0, 0%, 100%, 1) 50%, hsla(0, 20%, 100%, 0) 70%) 0 0, -webkit-linear-gradient(135deg, hsla(0, 20%, 100%, 0) 49%, hsla(0, 0%, 100%, 1) 50%, hsla(0, 20%, 100%, 0) 70%) 0 0;
+    }*/
+.bg_img_4 {
+    background-color: #123456;
+    background-image: -webkit-gradient(linear, left top, right top, color-stop(50%, rgba(255,255,255,.07)), color-stop(50%, transparent)),
+    -webkit-gradient(linear, left top, right top, color-stop(50%, rgba(255,255,255,.13)), color-stop(50%, transparent)),
+    -webkit-gradient(linear, left top, right top, color-stop(50%, transparent), color-stop(50%, rgba(255,255,255,.17))),
+    -webkit-gradient(linear, left top, right top, color-stop(50%, transparent), color-stop(50%, rgba(255,255,255,.19)));
+    background-image: -webkit-linear-gradient(left, rgba(255,255,255,.07) 50%, transparent 50%),
+    -webkit-linear-gradient(left, rgba(255,255,255,.13) 50%, transparent 50%),
+    -webkit-linear-gradient(left, transparent 50%, rgba(255,255,255,.17) 50%),
+    -webkit-linear-gradient(left, transparent 50%, rgba(255,255,255,.19) 50%);
+    background-image: -o-linear-gradient(left, rgba(255,255,255,.07) 50%, transparent 50%),
+    -o-linear-gradient(left, rgba(255,255,255,.13) 50%, transparent 50%),
+    -o-linear-gradient(left, transparent 50%, rgba(255,255,255,.17) 50%),
+    -o-linear-gradient(left, transparent 50%, rgba(255,255,255,.19) 50%);
+    background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
+    background-size: 13px, 29px, 37px, 53px;
+}
+.igp_img{
+    width: 183px;
+    height: 183px;
+    border-radius: 106px;
+    object-fit: cover;
+}
+.bg_gray_gradient_2 {
+    background: -webkit-gradient(linear,left bottom, left top,from(#ffffff),to(#d0d0d0)) !important;
+    background: -webkit-linear-gradient(bottom,#ffffff,#d0d0d0) !important;
+    background: -o-linear-gradient(bottom,#ffffff,#d0d0d0) !important;
+    background: linear-gradient(0deg,#ffffff,#d0d0d0) !important;
+}
+.bg_gray_gradient {
+    background: -webkit-gradient(linear,left bottom, left top,from(#d0d0d0),to(#ffffff)) !important;
+    background: -webkit-linear-gradient(bottom,#d0d0d0,#ffffff) !important;
+    background: -o-linear-gradient(bottom,#d0d0d0,#ffffff) !important;
+    background: linear-gradient(0deg,#d0d0d0,#ffffff) !important;
+}
+.bg_gray_white_gray {
+    background: -webkit-linear-gradient(45deg, #e0e0e0 40%, #ffffff 30%, #d0d0d0) !important;
+    background: -o-linear-gradient(45deg, #e0e0e0 40%, #ffffff 30%, #d0d0d0) !important;
+    background: linear-gradient(45deg, #e0e0e0 40%, #ffffff 30%, #d0d0d0) !important;
+}
+.bg_blue_blue {
+    background: -webkit-linear-gradient(315deg, #344599 70%, #3456aa 30%) !important;
+    background: -o-linear-gradient(315deg, #344599 70%, #3456aa 30%) !important;
+    background: linear-gradient(135deg, #344599 70%, #3456aa 30%) !important;
+}
+.bg_grad_5 {
+    background: -webkit-linear-gradient(235deg, rgba(255,255,255,0.0)10%, rgba(255,255,255,0.2)20%, rgba(19,27,67,1)70%), -webkit-linear-gradient(305deg, rgba(150,150,255,0.0)80%, rgba(60,111,162,0.8)20%), -webkit-linear-gradient(325deg, rgba(255,255,255,0.0)70%, rgba(60,111,190,0.7)30%), -webkit-linear-gradient(290deg, rgba(60,111,180,0.9)60%, rgba(60,111,190,0.8)40%);
+    background: -o-linear-gradient(235deg, rgba(255,255,255,0.0)10%, rgba(255,255,255,0.2)20%, rgba(19,27,67,1)70%), -o-linear-gradient(305deg, rgba(150,150,255,0.0)80%, rgba(60,111,162,0.8)20%), -o-linear-gradient(325deg, rgba(255,255,255,0.0)70%, rgba(60,111,190,0.7)30%), -o-linear-gradient(290deg, rgba(60,111,180,0.9)60%, rgba(60,111,190,0.8)40%);
+    background: linear-gradient(-145deg, rgba(255,255,255,0.0)10%, rgba(255,255,255,0.2)20%, rgba(19,27,67,1)70%), linear-gradient(145deg, rgba(150,150,255,0.0)80%, rgba(60,111,162,0.8)20%), linear-gradient(125deg, rgba(255,255,255,0.0)70%, rgba(60,111,190,0.7)30%), linear-gradient(-200deg, rgba(60,111,180,0.9)60%, rgba(60,111,190,0.8)40%);
+}
+
+/*.slick-slide img {
+    width: 100%;
+    height: 305px;
+    object-fit: contain;
+}*/
+.con-img img{
+    width: 100%;
+}
+.slick-slide img {
+    width: 100%;
+    height: 305px;
+    object-fit: cover;
+}
+@media screen and (min-width:1300px){
+    div#nav2 div ul.navbar-nav li a {;
+        padding: 0 14px 0 0 !important;
+    }
+}
+@media screen and (min-width:1400px){
+    .fr_lr {
+        max-width: 1350px;
+        /* width: 1384px; */
+        margin: 0 auto;
+    }
+    .top-26vh {
+    top: 12em;
+    }
+/*    .show_main {
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 1350px;
+    }*/
+/*    .top-185{
+        top: 292px;
+        right: unset!important;
+    }*/
+  .leftnavbox {
+        right: 15px;
+        top: 303px;
+    }
+  .rightnavbox{
+      right: 15px!important;
+  }
+    div#nav2 div ul.navbar-nav li a {;
+        padding: 0 14px 0 0 !important;
+    }
+}
+/*============gov service link 30/5/2021============*/
+
+
+.extra-link-image{
+    width:100%;
+}
+
+ /* Extra small devices (portrait phones, less than 576px) */
+ @media (max-width: 575.98px) { 
+    .extra-link-image{
+        width:70px;
+    }
+    .extra-link-list a {
+        font-size: 12px !important;
+        text-align: left;
+       
+    }
+    .extra-link-list ul li {
+        text-align: left;
+    }
+
+ }
+ 
+ /* // Small devices (landscape phones, 576px and up) */
+ @media (min-width: 576px) and (max-width: 767.98px) { 
+    .extra-link-image{
+        width:70px;
+    }
+    .extra-link-list a {
+        font-size: 13px !important;
+        text-align: left;
+       
+    }
+    .extra-link-list ul li {
+        text-align: left;
+    }
+ 
+ }
+
+.extra-link-list ul li {
+    list-style: none;
+    margin-bottom: 5px;
+}
+.extra-link-list ul {
+    padding-left: 0!important;
+}
+.extra-link-list a {
+    font-size: 15px;
+    color: #131b43;
+    font-family: "solaimanlipi";
+}
+.link-box{
+    padding: 15px;
+    font-family: "solaimanlipi";
+}
+
+.link-box h1 {
+    /* font-size: 20px!important; */
+    font-size: 21px;
+    line-height: 30px;
+    margin-bottom: 4px;
+}
+/*============gov service link 30/5/2021============*/
+/*========Add Women Cyber Support Start 06/20/2021==========*/
+
+.women-title{
+    font-size:19px;
+    color:#ffffff;
+}
+.women-title:hover{
+    color:wheat;
+}
+.cyber-w-img img{
+    width:125%;
+    margin-top:10px;
+    
+}
+ /* Extra small devices (portrait phones, less than 576px) */
+ @media (max-width: 575.98px) { 
+    .cyber-w-img img{
+        width:50%;
+       
+        
+    }
+
+ }
+ 
+ /* // Small devices (landscape phones, 576px and up) */
+ @media (min-width: 576px) and (max-width: 767.98px) { 
+    .cyber-w-img img{
+        width:50%;
+       
+        
+    }
+ 
+ }
+.csforw> .row{
+margin-right: 0!important;
+margin-left: 0!important;
+margin-top: 0!important;
+margin-bottom: 0!important;
+}
+   .csforw{
+   background: rgb(25,251,234)!important;
+background: linear-gradient(341deg, rgba(25,251,234,1) 0%, rgba(29,38,79,1) 100%)!important;
+}
+#cyber-email{
+    color:floralwhite;
+    margin-top: 10px;
+    font-size:11px!important;
+}
+.women-link a{
+    color:#ffffff;
+    font-size: 15px;
+    text-align:left!important;
+    
+}
+/*========Add Women Cyber Support end 06/20/2021==========*/
+
+.officers-table-design{
+    border: 3px solid rgb(99, 76, 218);
+    
+  }
+  .officers-table-design td{
+    /* border: 1px solid #344599; */
+    border: none !important;
+    padding-left: 50px !important;
+   
+  }
+  .officers-table-design th {
+    /* border: 1px solid #344599; */
+    border: none !important;
+  }
+
+/* Model css */
+  .black_overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: #00000099;
+    z-index: 10000;
+}
+
+.content_overlay {
+    position: fixed;
+    width: 55%;
+    height: 90%;
+    left: 22%;
+    top: 5%;
+    transition: all .4s;
+    z-index: 10000;
+}
+
+.close_block {
+
+    background-color: #ff1100;
+    color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    right: -24px;
+    top: 3px;
+    cursor: pointer;
+    z-index: 999;
+    border: 4px solid #fff;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.float-right {
+    float: right !important;
+}
+
+.cur_content_block {
+    max-height: 450px;
+}
+
+.popupImage {
+    width: 100%;
+    position: absolute;
+    border-radius: 5px;
+    border: 5px solid #fff;
+}
+
+.autoCloseMSG {
+    text-align: center;
+    float: right;
+    color: #fff;
+    position: absolute;
+    right: -350px;
+    top: -25px;
+}
+
+@media only screen and (max-width: 480px) {
+    .popupImage {
+        height: 300px;
+        width: 300px;
+        border-radius: 5px;
+        border: 5px solid #fff;
+        position: relative;
+    }
+
+    .content_overlay {
+        left: 14%;
+        top: 20%;
+    }
+
+    .close_block {
+        right: -106px;
+        position: absolute;
+        top: 0;
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+    }
+
+    .autoCloseMSG {
+        right: 0px;
+        top: 100px;
+        position: relative;
+    }
+}
+
+/*shakowat Blink eff css*/
+
+.blinking_effect{
+ text-align: center;
+ font-family: Verdana;
+ color: #0c3ad1 !important;
+ animation: blink-text 1.9s linear infinite;
+ font-size: 1em;
+ text-decoration: none;
+}
+@keyframes blink-text{
+ 0% {
+  opacity: 0;
+ }
+ 50% {
+  opacity: 1;
+ }
+ 100% {
+  opacity: 0;
+ }
+}
+
+
+/* ========================================
+   BOTH PANELS - UNIFIED DESKTOP & MOBILE STYLES
+   ======================================== */
+
+/* Force both panels to be visible at all times */
+#staticsidenavleft,
+#staticsidenavright {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Desktop - Both panels should be fixed on scroll */
+@media only screen and (min-width: 769px) {
+    .leftnavbox.fixed.top-40,
+    .rightnavbox.fixed.top-40 {
+        position: fixed !important;
+        top: 40px !important;
+        z-index: 500 !important;
+    }
+    
+    .leftnavbox.fixed.top-40 {
+        left: 0 !important;
+        right: auto !important;
+    }
+    
+    .rightnavbox.fixed.top-40 {
+        right: 0 !important;
+        left: auto !important;
+    }
+    
+    .leftnavbox.absolute.top-24vh,
+    .rightnavbox.absolute.top-24vh {
+        position: absolute !important;
+        top: 24vh !important;
+    }
+    
+    .leftnavbox.absolute.top-24vh {
+        left: 0 !important;
+        right: auto !important;
+    }
+    
+    .rightnavbox.absolute.top-24vh {
+        right: 0 !important;
+        left: auto !important;
+    }
+}
+
+/* Mobile - Both panels always fixed */
+@media only screen and (max-width: 768px) {
+    .leftnavbox,
+    .rightnavbox {
+        position: fixed !important;
+        top: 12em !important;
+    }
+    
+    .leftnavbox {
+        left: 0 !important;
+        right: auto !important;
+        z-index: 999 !important;
+    }
+    
+    .rightnavbox {
+        right: 0 !important;
+        left: auto !important;
+        z-index: 999 !important;
+    }
+}
+
+
+/* ============================================================
+   COMPLETE MOBILE RESPONSIVE FIX
+   ============================================================ */
+
+/* ========================================
+   1. LEFT PANEL SERVICES ICONS - MOBILE
+   ======================================== */
+@media only screen and (max-width: 768px) {
+    /* Services icons in left panel - 50% smaller */
+    .col-lg-3.col-md-3.col-sm-12.col-xs-12 .icon_img_1,
+    .col-lg-3.col-md-3.col-sm-12.col-xs-12 .icon_img_2,
+    .col-lg-3.col-md-3.col-sm-12.col-xs-12 .mob_size {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+        min-height: 20px !important;
+        max-width: 20px !important;
+        max-height: 20px !important;
+        object-fit: contain !important;
+    }
+    
+    /* Adjust padding for smaller icons */
+    .col-lg-3.col-md-3.col-sm-12.col-xs-12 .icon_img_1,
+    .col-lg-3.col-md-3.col-sm-12.col-xs-12 .icon_img_2 {
+        padding: 2px !important;
+    }
+    
+    /* Make links smaller on mobile */
+    .col-lg-3.col-md-3.col-sm-12.col-xs-12 .lnk-3-2,
+    .col-lg-3.col-md-3.col-sm-12.col-xs-12 .lnk-3-1 {
+        font-size: 12px !important;
+        line-height: 30px !important;
+        height: 30px !important;
+        padding: 0 8px !important;
+    }
+}
+
+/* ========================================
+   2. NOTICE BOARD - MOBILE TEXT SIZE
+   ======================================== */
+@media only screen and (max-width: 768px) {
+    /* Notice text - smaller and without bold */
+    .notice-new-items-desgin {
+        margin-bottom: 2px !important;
+        padding: 3px 5px !important;
+        line-height: 1.2 !important;
+    }
+    
+    .notice-new-items-desgin span a,
+    .notice-new-items-desgin span {
+        font-size: 11px !important;
+        font-weight: normal !important;
+        font-weight: 400 !important;
+        line-height: 1.3 !important;
+        color: #333 !important;
+    }
+    
+    .notice-new-items-desgin .fa-caret-right {
+        font-size: 10px !important;
+        color: #be1e2d !important;
+    }
+    
+    /* Notice board heading */
+    .heading-1.padding-3-0-prcnt.blue_site.text_shadow_1.google_marcellus_SC.size-20 {
+        font-size: 16px !important;
+        padding: 10px 0 !important;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .notice-new-items-desgin span a,
+    .notice-new-items-desgin span {
+        font-size: 10px !important;
+    }
+}
+
+/* ========================================
+   3. GOVT BOXES - MOBILE RESPONSIVE
+   ======================================== */
+@media only screen and (max-width: 768px) {
+    /* Govt box heading - smaller */
+    .link-box h1 {
+        font-size: 14px !important;
+        line-height: 20px !important;
+        margin-bottom: 6px !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Govt box image - smaller (50% of desktop) */
+    .link-box .extra-link-image.mobi_res {
+        width: 60px !important;
+        height: auto !important;
+        max-width: 60px !important;
+        display: block !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Govt box link text - smaller */
+    .extra-link-list ul li {
+        margin-bottom: 4px !important;
+    }
+    
+    .extra-link-list ul li a {
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+        font-weight: normal !important;
+    }
+    
+    .extra-link-list ul li i.fa-caret-right {
+        font-size: 10px !important;
+        margin-right: 4px !important;
+    }
+    
+    /* Govt box container - adjust padding */
+    .link-box {
+        padding: 10px !important;
+    }
+    
+    /* Govt box - adjust layout */
+    .link-box .col-md-4,
+    .link-box .col-md-8 {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+    
+    /* Image and text side by side on mobile */
+    .link-box .col-md-4 {
+        width: 30% !important;
+        float: left !important;
+    }
+    
+    .link-box .col-md-8 {
+        width: 70% !important;
+        float: left !important;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .link-box h1 {
+        font-size: 12px !important;
+        line-height: 16px !important;
+    }
+    
+    .link-box .extra-link-image.mobi_res {
+        width: 45px !important;
+        max-width: 45px !important;
+    }
+    
+    .extra-link-list ul li a {
+        font-size: 10px !important;
+    }
+    
+    .link-box .col-md-4 {
+        width: 25% !important;
+    }
+    
+    .link-box .col-md-8 {
+        width: 75% !important;
+    }
+}
+
+/* ========================================
+   4. GOVT BOXES CONTAINER - OVERALL
+   ======================================== */
+@media only screen and (max-width: 768px) {
+    .govt-box-item {
+        padding: 0 5px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .govt-box-item .box9 {
+        padding: 8px !important;
+        height: auto !important;
+        min-height: 80px !important;
+    }
+    
+    /* Fix for col-md-6 on mobile */
+    .govt-box-item .col-md-6 {
+        width: 100% !important;
+        float: none !important;
+    }
+}
+
+/* ========================================
+   5. NOTICE BOARD - MARQUEE CONTAINER
+   ======================================== */
+@media only screen and (max-width: 768px) {
+    /* Notice board container */
+    .col-lg-6.col-md-6.col-sm-12.col-xs-12.padding-bottom-2-prcnt.text-left {
+        padding: 10px 5px !important;
+        background-size: 60px !important;
+        background-position: right bottom !important;
+    }
+    
+    /* Marquee container */
+    marquee {
+        height: 150px !important;
+        max-height: 150px !important;
+    }
+    
+    /* Notice items */
+    .notice-new-items-desgin {
+        padding: 2px 3px !important;
+    }
+}
+
+/* ========================================
+   6. EMERGENCY PREVIEW - MOBILE
+   ======================================== */
+@media only screen and (max-width: 768px) {
+    .emergency-preview-item {
+        min-height: 55px !important;
+        padding: 4px 8px !important;
+        gap: 10px !important;
+    }
+    
+    .emergency-preview-item .fa-phone {
+        font-size: 12px !important;
+    }
+    
+    .emergency-preview-item .service-name {
+        font-size: 12px !important;
+    }
+    
+    .emergency-preview-item .contact-number {
+        font-size: 14px !important;
+    }
+}
+
+
+
+/* ============================================================
+   IMPORTANT LINKS - MOBILE FIX
+   ============================================================ */
+
+@media only screen and (max-width: 768px) {
+    /* Image/Icon - Smaller and visible */
+    #importantLinks .box8 .col-lg-2.col-md-3.col-sm-3.col-xs-2 img {
+        width: 35px !important;
+        height: 35px !important;
+        min-width: 35px !important;
+        min-height: 35px !important;
+        max-width: 40px !important;
+        max-height: 40px !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 0 auto !important;
+        
+        
+    
+    /* Image container - ensure visibility */
+    #importantLinks .box8 .col-lg-2.col-md-3.col-sm-3.col-xs-2 {
+        width: 20% !important;
+        height: auto !important;
+        min-height: 50px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: visible !important;
+    }
+    
+    /* Text container */
+    #importantLinks .box8 .col-lg-10.col-md-9.col-sm-9.col-xs-10 {
+        width: 80% !important;
+        padding: 5px 8px !important;
+    }
+    
+    /* Heading text - Smaller */
+    #importantLinks .box8 .col-lg-10.col-md-9.col-sm-9.col-xs-10 .size-16 {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* Content text - Smaller */
+    #importantLinks .box8 .col-lg-10.col-md-9.col-sm-9.col-xs-10 .size-12 {
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Box height - Auto */
+    #importantLinks .box8 {
+        height: auto !important;
+        min-height: 60px !important;
+        padding: 5px !important;
+    }
+    
+    #importantLinks .box8 a.block {
+        height: auto !important;
+        min-height: 60px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    #importantLinks .box8 .col-lg-2.col-md-3.col-sm-3.col-xs-2 img {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
+        
+    }
+    
+    #importantLinks .box8 .col-lg-10.col-md-9.col-sm-9.col-xs-10 .size-16 {
+        font-size: 11px !important;
+    }
+    
+    #importantLinks .box8 .col-lg-10.col-md-9.col-sm-9.col-xs-10 .size-12 {
+        font-size: 9px !important;
+    }
+}
+
+
